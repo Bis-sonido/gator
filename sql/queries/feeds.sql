@@ -1,0 +1,31 @@
+-- name: CreateFeed :one
+INSERT INTO feeds (id, created_at, updated_at, name, url, user_id)
+VALUES (
+    $1,
+    $2,
+    $3,
+    $4,
+    $5,
+    $6
+)
+RETURNING *;
+
+-- name: ListFeeds :many
+SELECT feeds.name AS feed_name, feeds.url, users.name AS user_name
+FROM feeds
+INNER JOIN users
+    ON feeds.user_id = users.id;
+
+-- name: MarkFeedFetched :one
+UPDATE feeds
+SET
+    last_fetched_at = NOW(),
+    updated_at = NOW()
+WHERE feeds.id = $1
+RETURNING id, last_fetched_at, updated_at;
+
+-- name: GetNextFeedToFetch :one
+SELECT id, feeds.name AS feed_name, feeds.url, feeds.last_fetched_at
+FROM feeds
+ORDER BY last_fetched_at ASC NULLS FIRST
+LIMIT 1;
