@@ -30,7 +30,7 @@ func browse(s *state, cmd command, user database.User) error {
 
 	fmt.Printf("Found %d posts for user %s: \n", len(posts), user.Name)
 	for _, post := range posts {
-		fmt.Printf("%s from %s\n", post.PublishedAt.Format("Mon Jan 2"), post.FeedName)
+		fmt.Printf("%s from %s\n", post.PublishedAt.Time.Format("Mon, Jan 2"), post.FeedName)
 		fmt.Printf("Title: %s\n", post.Title)
 		fmt.Printf("Description: %s\n", post.Description.String)
 		fmt.Printf("URL: %s\n", post.Url)
